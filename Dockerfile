@@ -52,7 +52,7 @@ ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 
 WORKDIR /data
 
-ENTRYPOINT ["scripts/start.sh"]
+ENTRYPOINT ["/scripts/start.sh"]
 CMD [""]
 
 EXPOSE 9200 9300
