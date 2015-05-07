@@ -1,7 +1,5 @@
 FROM ubuntu:trusty
 
-FROM ubuntu:trusty
-
 RUN \
     apt-get update \
         --quiet \
@@ -52,7 +50,7 @@ ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 
 WORKDIR /data
 
-ENTRYPOINT ["/scripts/start.sh"]
+ENTRYPOINT ["/bin/bash", "/scripts/start.sh"]
 CMD [""]
 
 EXPOSE 9200 9300
