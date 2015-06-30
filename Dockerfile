@@ -14,7 +14,7 @@ RUN \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-
+# Add Java.
 RUN \
   echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
   add-apt-repository -y ppa:webupd8team/java && \
@@ -26,9 +26,8 @@ RUN \
 # Define commonly used JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
+# ES version.
 ENV ES_PKG_NAME elasticsearch-1.5.0
-ENV HTTP_BASIC_URL https://github.com/Asquera/elasticsearch-http-basic/releases/download/v1.4.0/elasticsearch-http-basic-1.4.0.jar
-ENV PLUGIN_DEST /elasticsearch/plugins/http-basic/
 
 # Install Elasticsearch.
 RUN \
@@ -38,16 +37,21 @@ RUN \
   rm -f $ES_PKG_NAME.tar.gz && \
   mv /$ES_PKG_NAME /elasticsearch
 
-RUN mkdir -p $PLUGIN_DEST
+# Http-basic plugin.
+RUN /elasticsearch/bin/plugin  Asquera/elasticsearch-http-basic/1.5.0
 
-ADD $HTTP_BASIC_URL $PLUGIN_DEST
+# Mapper-attachments plugin.
+RUN /elasticsearch/bin/plugin --install elastic/elasticsearch-mapper-attachments/2.5.0
 
+# Set up prep script location.
 ADD scripts /scripts
 RUN chmod +x /scripts/*.sh
 RUN touch /.firstrun
 
+# Set up default config.
 ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 
+# Mount for persistent data.
 WORKDIR /data
 
 ENTRYPOINT ["/bin/bash", "/scripts/start.sh"]
