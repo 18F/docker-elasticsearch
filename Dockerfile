@@ -38,10 +38,13 @@ RUN \
   mv /$ES_PKG_NAME /elasticsearch
 
 # Http-basic plugin.
-RUN /elasticsearch/bin/plugin  Asquera/elasticsearch-http-basic/1.5.0
+ENV HTTP_BASIC_URL https://github.com/Asquera/elasticsearch-http-basic/releases/download/v1.4.0/elasticsearch-http-basic-1.4.0.jar
+ENV PLUGIN_DEST /elasticsearch/plugins/http-basic/
+RUN mkdir -p $PLUGIN_DEST
+ADD $HTTP_BASIC_URL $PLUGIN_DEST
 
 # Mapper-attachments plugin.
-RUN /elasticsearch/bin/plugin --install elastic/elasticsearch-mapper-attachments/2.5.0
+RUN /elasticsearch/bin/plugin install elasticsearch/elasticsearch-mapper-attachments/2.5.0
 
 # Set up prep script location.
 ADD scripts /scripts
