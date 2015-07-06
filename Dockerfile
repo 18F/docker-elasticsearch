@@ -26,10 +26,9 @@ RUN \
 # Define commonly used JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
-# ES version.
+# Install Elasticsearch.
 ENV ES_PKG_NAME elasticsearch-1.5.0
 
-# Install Elasticsearch.
 RUN \
   cd / && \
   wget https://download.elasticsearch.org/elasticsearch/elasticsearch/$ES_PKG_NAME.tar.gz && \
@@ -37,22 +36,23 @@ RUN \
   rm -f $ES_PKG_NAME.tar.gz && \
   mv /$ES_PKG_NAME /elasticsearch
 
-# Http-basic plugin.
-ENV HTTP_BASIC_URL https://github.com/Asquera/elasticsearch-http-basic/releases/download/v1.4.0/elasticsearch-http-basic-1.4.0.jar
-ENV PLUGIN_DEST /elasticsearch/plugins/http-basic/
-RUN mkdir -p $PLUGIN_DEST
-ADD $HTTP_BASIC_URL $PLUGIN_DEST
+# Set up default Elasticsearch config.
+ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 
-# Mapper-attachments plugin.
+# Elasticsearch http-basic plugin.
+ENV HTTP_BASIC_URL https://github.com/Asquera/elasticsearch-http-basic/releases/download/v1.5.0/elasticsearch-http-basic-1.5.0.jar
+RUN /elasticsearch/bin/plugin --url $HTTP_BASIC_URL --install http-basic-server-plugin
+
+# Elasticsearch mapper-attachments plugin.
 RUN /elasticsearch/bin/plugin install elasticsearch/elasticsearch-mapper-attachments/2.5.0
+
+# Elasticsearch elasticsearch-cloud-aws plugin.
+RUN /elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.5.1
 
 # Set up prep script location.
 ADD scripts /scripts
 RUN chmod +x /scripts/*.sh
 RUN touch /.firstrun
-
-# Set up default config.
-ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 
 # Mount for persistent data.
 WORKDIR /data
