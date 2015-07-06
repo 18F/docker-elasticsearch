@@ -1,6 +1,6 @@
 FROM ubuntu:trusty
 
-MAINTAINER Ozzy Johnson <docker@ozzy.io>
+MAINTAINER Ozzy Johnson <oswald.johnson@gsa.gov>
 
 RUN \
     apt-get update \
