@@ -1,3 +1,7 @@
+# Exit on any error.
+set -e
+
+# Elasticsearch config dir.
 CONFIG_DIR=/elasticsearch/config
 
 # Set the required login credentials.
@@ -9,4 +13,10 @@ if [[ -e /.firstrun ]]; then
   rm /.firstrun
 fi
 
-/elasticsearch/bin/elasticsearch
+# Make sure our unprivileged user can access the Elasticsearch data.
+echo "Preparing to drop root..."
+chown -R elasticsearch:elasticsearch /data
+
+# Drop root perms via gosu for security.
+echo "Dropping root and starting Elasticsearch..."
+exec gosu elasticsearch /elasticsearch/bin/elasticsearch

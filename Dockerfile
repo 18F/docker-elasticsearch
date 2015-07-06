@@ -1,5 +1,7 @@
 FROM ubuntu:trusty
 
+MAINTAINER Ozzy Johnson <docker@ozzy.io>
+
 RUN \
     apt-get update \
         --quiet \
@@ -7,12 +9,22 @@ RUN \
         --yes \
         --no-install-recommends \
         --no-install-suggests \
-    software-properties-common \
+    curl \
     python-software-properties \
+    software-properties-common \
 
 # Clean up packages.
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Borrow gosu setup code from the docker-library Elasticsearch image found here:
+# https://github.com/docker-library/elasticsearch/blob/master/1.5/Dockerfile
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-$(dpkg --print-architecture)" \
+        && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-$(dpkg --print-architecture).asc" \
+        && gpg --verify /usr/local/bin/gosu.asc \
+        && rm /usr/local/bin/gosu.asc \
+        && chmod +x /usr/local/bin/gosu
 
 # Add Java.
 RUN \
@@ -26,9 +38,10 @@ RUN \
 # Define commonly used JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
-# Install Elasticsearch.
+# ES version.
 ENV ES_PKG_NAME elasticsearch-1.5.0
 
+# Install Elasticsearch.
 RUN \
   cd / && \
   wget https://download.elasticsearch.org/elasticsearch/elasticsearch/$ES_PKG_NAME.tar.gz && \
@@ -36,23 +49,30 @@ RUN \
   rm -f $ES_PKG_NAME.tar.gz && \
   mv /$ES_PKG_NAME /elasticsearch
 
-# Set up default Elasticsearch config.
+# Set up default config.
 ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 
-# Elasticsearch http-basic plugin.
+# http-basic plugin.
 ENV HTTP_BASIC_URL https://github.com/Asquera/elasticsearch-http-basic/releases/download/v1.5.0/elasticsearch-http-basic-1.5.0.jar
-RUN /elasticsearch/bin/plugin --url $HTTP_BASIC_URL --install http-basic-server-plugin
+#ENV PLUGIN_DEST /elasticsearch/plugins/http-basic/
+#RUN mkdir -p $PLUGIN_DEST
+#ADD $HTTP_BASIC_URL $PLUGIN_DEST
+RUN /elasticsearch/bin/plugin --url $HTTP_BASIC_URL --install http-basic
 
-# Elasticsearch mapper-attachments plugin.
+# mapper-attachments plugin.
 RUN /elasticsearch/bin/plugin install elasticsearch/elasticsearch-mapper-attachments/2.5.0
 
-# Elasticsearch elasticsearch-cloud-aws plugin.
+# elasticsearch-cloud-aws plugin.
 RUN /elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.5.1
 
 # Set up prep script location.
 ADD scripts /scripts
 RUN chmod +x /scripts/*.sh
 RUN touch /.firstrun
+
+# Create the Elasticsearch user.
+RUN groupadd -r elasticsearch \
+  && useradd -r -g elasticsearch elasticsearch
 
 # Mount for persistent data.
 WORKDIR /data
