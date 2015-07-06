@@ -2,8 +2,6 @@ node.name: node
 path:
   data: /data/data
   logs: /data/log
-  plugins: /data/plugins
-  work: /data/work
 index:
   number_of_shards: 1
   number_of_replicas: 0
@@ -13,7 +11,12 @@ http:
     enabled: true
     user: ES_USER
     password: "ES_PASS"
+
 # disable node discovery via multicast
 discovery.zen.ping.multicast.enabled: false
+
 # disable shutdown REST API
 action.disable_shutdown: true
+
+# ensure mapper-attachments is installed
+plugin.mandatory: cloud-aws, http-basic-server-plugin, mapper-attachments
