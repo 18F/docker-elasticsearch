@@ -17,3 +17,4 @@ http:
 discovery.zen.ping.multicast.enabled: false
 # disable shutdown REST API
 action.disable_shutdown: true
+plugin.mandatory: mapper-attachments, elasticsearch-cloud-aws
