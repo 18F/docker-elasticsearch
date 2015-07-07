@@ -56,6 +56,9 @@ RUN \
 # Set up default config.
 ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 
+# Add custom scripts.
+ADD config/scripts /elasticsearch/config
+
 # http-basic plugin.
 ENV HB_VERSION=1.5.0
 ENV HTTP_BASIC_URL https://github.com/Asquera/elasticsearch-http-basic/releases/download/v${HB_VERSION}/elasticsearch-http-basic-${HB_VERSION}.jar
