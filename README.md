@@ -12,7 +12,7 @@ Elasticsearch on Ubuntu with several useful plugins and a small script which con
 
 #### Usage:
 
-This container container image was created for use with the [cf-containers-broker](https://github.com/cf-platform-eng/cf-containers-broker) for Cloud Foundry, but it should run just fine standalone or alongside any orchestrator capable of inserting environment variables.
+This container image was created for use with the [cf-containers-broker](https://github.com/cf-platform-eng/cf-containers-broker) for Cloud Foundry, but it should run just fine standalone or alongside any orchestrator capable of inserting environment variables.
 
 Launch a container from the image by providing `username`, `password` and an optional volume where the Elasticsearch data and logs will be stored.
 
