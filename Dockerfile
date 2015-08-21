@@ -88,6 +88,10 @@ RUN chmod +x /scripts/*.sh \
 RUN groupadd -r elasticsearch \
   && useradd -r -g elasticsearch elasticsearch
 
+# Use a reasonable heap size.
+# https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html
+ENV ES_HEAP_SIZE=4g
+
 # Mount for persistent data.
 VOLUME ["/data"]
 
