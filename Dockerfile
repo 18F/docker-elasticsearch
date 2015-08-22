@@ -35,7 +35,7 @@ RUN \
        -qq \
   && apt-get install \
        -qq \
-       -y oracle-java8-installer \
+       -y oracle-java8-installer=8u45+8u33arm-1~webupd8~1 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /var/cache/oracle-jdk8-installer
