@@ -22,4 +22,4 @@ action.disable_shutdown: true
 plugin.mandatory: cloud-aws, http-basic-server-plugin, mapper-attachments
 
 # marvel authentication
-marvel.agent.exporter.es.hosts: [ "ES_USER:ES_PASS@127.0.0.1:9200" ]
+# marvel.agent.exporter.es.hosts: [ "ES_USER:ES_PASS@127.0.0.1:9200" ]
