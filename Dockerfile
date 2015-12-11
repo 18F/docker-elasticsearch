@@ -44,7 +44,7 @@ RUN \
 ENV JAVA_HOME /usr/lib/jvm/java-7-oracle
 
 # Install Elasticsearch.
-ENV ES_PKG_NAME elasticsearch-1.5.0
+ENV ES_PKG_NAME elasticsearch-1.7.1
 RUN \
   cd / \
   && wget https://download.elasticsearch.org/elasticsearch/elasticsearch/${ES_PKG_NAME}.tar.gz \
@@ -68,16 +68,22 @@ RUN /elasticsearch/bin/plugin \
   --silent
 
 # mapper-attachments plugin.
-ENV MA_VERSION=2.5.0
+ENV MA_VERSION=2.7.0
 RUN /elasticsearch/bin/plugin \
   install elasticsearch/elasticsearch-mapper-attachments/${MA_VERSION} \
   --silent
 
 # elasticsearch-cloud-aws plugin.
-ENV CA_VERSION=2.5.1
+ENV CA_VERSION=2.7.0
 RUN /elasticsearch/bin/plugin install \
   elasticsearch/elasticsearch-cloud-aws/${CA_VERSION} \
   --silent
+
+# marvel plugin
+ENV MARVEL_VERSION=latest
+RUN /elasticsearch/bin/plugin install \
+  elasticsearch/marvel/${MARVEL_VERSION} \
+  --silent 
 
 # Set up prep script location.
 ADD scripts /scripts
