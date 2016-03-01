@@ -1,6 +1,6 @@
 FROM ubuntu:trusty
 
-MAINTAINER Ozzy Johnson <oswald.johnson@gsa.gov>
+MAINTAINER Devops <devops@gsa.gov>
 
 RUN \
     apt-get update \
@@ -44,7 +44,7 @@ RUN \
 ENV JAVA_HOME /usr/lib/jvm/java-7-oracle
 
 # Install Elasticsearch.
-ENV ES_PKG_NAME elasticsearch-1.7.1
+ENV ES_PKG_NAME elasticsearch-1.7.5
 RUN \
   cd / \
   && wget https://download.elasticsearch.org/elasticsearch/elasticsearch/${ES_PKG_NAME}.tar.gz \
@@ -60,7 +60,7 @@ ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 ADD config/scripts /elasticsearch/config
 
 # http-basic plugin.
-ENV HB_VERSION=1.5.0
+ENV HB_VERSION=1.5.1
 ENV HTTP_BASIC_URL https://github.com/Asquera/elasticsearch-http-basic/releases/download/v${HB_VERSION}/elasticsearch-http-basic-${HB_VERSION}.jar
 RUN /elasticsearch/bin/plugin \
   --url $HTTP_BASIC_URL \
@@ -68,13 +68,13 @@ RUN /elasticsearch/bin/plugin \
   --silent
 
 # mapper-attachments plugin.
-ENV MA_VERSION=2.7.0
+ENV MA_VERSION=2.7.1
 RUN /elasticsearch/bin/plugin \
   install elasticsearch/elasticsearch-mapper-attachments/${MA_VERSION} \
   --silent
 
 # elasticsearch-cloud-aws plugin.
-ENV CA_VERSION=2.7.0
+ENV CA_VERSION=2.7.1
 RUN /elasticsearch/bin/plugin install \
   elasticsearch/elasticsearch-cloud-aws/${CA_VERSION} \
   --silent
