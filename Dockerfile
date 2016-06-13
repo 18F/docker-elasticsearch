@@ -79,12 +79,6 @@ RUN /elasticsearch/bin/plugin install \
   elasticsearch/elasticsearch-cloud-aws/${CA_VERSION} \
   --silent
 
-# marvel plugin
-ENV MARVEL_VERSION=latest
-RUN /elasticsearch/bin/plugin install \
-  elasticsearch/marvel/${MARVEL_VERSION} \
-  --silent 
-
 # Set up prep script location.
 ADD scripts /scripts
 RUN chmod +x /scripts/*.sh \
